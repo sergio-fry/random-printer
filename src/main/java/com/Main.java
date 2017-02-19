@@ -15,24 +15,30 @@ import java.awt.print.PrinterException;
 
 public class Main {
 
-  public static void main(String[] args) throws InvalidPasswordException, IOException, PrinterException {
-    PDDocument document = PDDocument.load(new File("./example.pdf"));
+    static PDDocument document;
 
-    PrintService myPrintService = findPrintService("My Windows printer Name");
-
-    PrinterJob job = PrinterJob.getPrinterJob();
-    job.setPageable(new PDFPageable(document));
-    job.setPrintService(myPrintService);
-    job.print();
-  }
-
-  private static PrintService findPrintService(String printerName) {
-    PrintService[] printServices = PrintServiceLookup.lookupPrintServices(null, null);
-    for (PrintService printService : printServices) {
-      if (printService.getName().trim().equals(printerName)) {
-        return printService;
-      }
+    public static void main(String[] args) throws InvalidPasswordException, IOException, PrinterException {
+        print();
     }
-    return null;
-  }
+
+    private static void print() throws IOException, NullPointerException, PrinterException {
+        document = PDDocument.load(new File("./example.pdf"));
+        
+        PrintService myPrintService = findPrintService("PDFwriter");
+
+        PrinterJob job = PrinterJob.getPrinterJob();
+        job.setPageable(new PDFPageable(document));
+        job.setPrintService(myPrintService);
+        job.print();
+    }
+
+    private static PrintService findPrintService(String printerName) {
+        PrintService[] printServices = PrintServiceLookup.lookupPrintServices(null, null);
+        for (PrintService printService : printServices) {
+            if (printService.getName().trim().equals(printerName)) {
+                return printService;
+            }
+        }
+        return null;
+    }
 }
