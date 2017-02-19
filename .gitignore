@@ -1,3 +1,5 @@
 /RandomPrinter/.nb-gradle/
 .gradle/
 build
+/.nb-gradle/
+*.log
