@@ -1,4 +1,4 @@
-// http://stackoverflow.com/questions/16293859/print-a-pdf-file-using-printerjob-in-java
+package com.randomprinter;
 
 import java.awt.print.PrinterJob;
 import java.io.File;
@@ -9,11 +9,14 @@ import javax.print.PrintServiceLookup;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.printing.PDFPageable;
 
-public class PrintingExample {
+import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
+import java.io.IOException;
+import java.awt.print.PrinterException;
 
-  public static void main(String args[]) throws Exception {
+public class Main {
 
-    PDDocument document = PDDocument.load(new File("C:/temp/example.pdf"));
+  public static void main(String[] args) throws InvalidPasswordException, IOException, PrinterException {
+    PDDocument document = PDDocument.load(new File("./example.pdf"));
 
     PrintService myPrintService = findPrintService("My Windows printer Name");
 
@@ -21,8 +24,7 @@ public class PrintingExample {
     job.setPageable(new PDFPageable(document));
     job.setPrintService(myPrintService);
     job.print();
-
-  }       
+  }
 
   private static PrintService findPrintService(String printerName) {
     PrintService[] printServices = PrintServiceLookup.lookupPrintServices(null, null);
