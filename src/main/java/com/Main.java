@@ -26,6 +26,8 @@ import java.awt.print.PrinterException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import java.util.concurrent.TimeUnit;;
+
 public class Main extends Application {
 
     static PDDocument document;
@@ -47,10 +49,10 @@ public class Main extends Application {
             @Override
             public void handle(ActionEvent e) {
                 try {
-                    print();
+                    startPrintLoop();
                 } catch (Exception ex) {
                     Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-                    
+                    log(ex.getMessage());
                 }
             }
         });
@@ -71,6 +73,22 @@ public class Main extends Application {
     
     private static void log(String s) {
         log_renderer.appendText(s + "\n");
+    }
+    
+    public static void startPrintLoop() throws InterruptedException {
+        new java.util.Timer().schedule(
+                new java.util.TimerTask() {
+
+            @Override
+            public void run() {
+                try {
+                    print();
+                } catch (Exception ex) {
+                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                    log(ex.getLocalizedMessage());
+                }   
+            }
+        }, 0, 2000);
     }
 
     private static void print() throws Exception {
