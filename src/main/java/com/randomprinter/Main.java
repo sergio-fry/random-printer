@@ -117,7 +117,7 @@ public class Main extends Application {
     }
     
     private static PDDocument randomDocument() throws IOException {
-        PDDocument src = PDDocument.load(new File("./example.pdf"));     
+        PDDocument src = PDDocument.load(new File("./document.pdf"));     
         PDDocument doc = new PDDocument();      
         doc.addPage(src.getPage(randomGenerator.nextInt(src.getNumberOfPages())));
         
