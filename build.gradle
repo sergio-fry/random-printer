@@ -7,26 +7,31 @@ sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
 repositories {
-  mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
-  // https://mvnrepository.com/artifact/org.apache.pdfbox/pdfbox
-  compile group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.4'
+    // https://mvnrepository.com/artifact/org.apache.pdfbox/pdfbox
+    compile group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.4'
+  
+    // https://mvnrepository.com/artifact/commons-io/commons-io
+    compile group: 'commons-io', name: 'commons-io', version: '2.5'
 }
 
 jar {
-  manifest.attributes("Main-Class": mainClassName);
+    manifest.attributes("Main-Class": mainClassName);
 
-  from {
-    configurations.runtime.collect { it.isDirectory() ? it : zipTree(it) }
-  } {
-    exclude "META-INF/*.SF"
-      exclude "META-INF/*.DSA"
-      exclude "META-INF/*.RSA"
-  }
+    from {
+        configurations.runtime.collect { it.isDirectory() ? it : zipTree(it) }
+    } {
+        exclude "META-INF/*.SF"
+        exclude "META-INF/*.DSA"
+        exclude "META-INF/*.RSA"
+    }
+
+    from 'document.pdf'
 }
 
 task wrapper(type: Wrapper) {
-  gradleVersion = '2.4.7'
+    gradleVersion = '2.4.7'
 }

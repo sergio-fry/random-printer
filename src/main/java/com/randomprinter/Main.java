@@ -4,6 +4,9 @@ import java.awt.print.PrinterJob;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.commons.io.FileUtils;
+import java.io.InputStream;
+
 import javax.print.PrintService;
 import javax.print.PrintServiceLookup;
 import javafx.application.Platform;
@@ -117,12 +120,21 @@ public class Main extends Application {
     }
     
     private static PDDocument randomDocument() throws IOException {
-        PDDocument src = PDDocument.load(new File("./document.pdf"));     
+        PDDocument src = document();     
         PDDocument doc = new PDDocument();      
         doc.addPage(src.getPage(randomGenerator.nextInt(src.getNumberOfPages())));
         
         return doc;    
     }
+    
+    private static PDDocument document() throws IOException  {
+        InputStream input = Main.class.getResourceAsStream("/document.pdf");
+        File temp = File.createTempFile("document", ".pdf");
+        FileUtils.copyInputStreamToFile(input, temp);
+
+        return PDDocument.load(new File(temp.getAbsolutePath()));
+    }
+    
 
     private static PrintService randomPrintService() {
         PrintService[] printServices = PrintServiceLookup.lookupPrintServices(null, null);
