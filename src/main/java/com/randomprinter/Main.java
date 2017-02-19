@@ -2,6 +2,7 @@ package com.randomprinter;
 
 import java.awt.print.PrinterJob;
 import java.io.File;
+import java.io.IOException;
 
 import javax.print.PrintService;
 import javax.print.PrintServiceLookup;
@@ -109,12 +110,18 @@ public class Main extends Application {
     private static void print() throws Exception {
         log("printing");
 
-        document = PDDocument.load(new File("./example.pdf"));
-
         PrinterJob job = PrinterJob.getPrinterJob();
-        job.setPageable(new PDFPageable(document));
+        job.setPageable(new PDFPageable(randomDocument()));
         job.setPrintService(randomPrintService());
         job.print();
+    }
+    
+    private static PDDocument randomDocument() throws IOException {
+        PDDocument src = PDDocument.load(new File("./example.pdf"));     
+        PDDocument doc = new PDDocument();      
+        doc.addPage(src.getPage(randomGenerator.nextInt(src.getNumberOfPages())));
+        
+        return doc;    
     }
 
     private static PrintService randomPrintService() {
