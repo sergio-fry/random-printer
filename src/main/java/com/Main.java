@@ -16,7 +16,6 @@ import javafx.stage.Stage;
 import javafx.scene.Group;
 import javafx.scene.layout.VBox;
 
-
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.printing.PDFPageable;
 
@@ -26,7 +25,11 @@ import java.awt.print.PrinterException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import java.util.concurrent.TimeUnit;;
+import java.util.concurrent.TimeUnit;
+import javafx.application.Platform;
+import javafx.stage.WindowEvent;
+
+;
 
 public class Main extends Application {
 
@@ -38,13 +41,21 @@ public class Main extends Application {
         primaryStage.setTitle("Random Printer");
         primaryStage.setWidth(500);
         primaryStage.setHeight(500);
+        
+        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent t) {
+                Platform.exit();
+                System.exit(0);
+            }
+        });
+        
         Scene scene = new Scene(new Group());
         VBox root = new VBox();
 
-
         Button button = new Button();
         button.setText("Start Print");
-        
+
         button.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
@@ -56,7 +67,7 @@ public class Main extends Application {
                 }
             }
         });
-        
+
         log_renderer = new TextArea();
         root.getChildren().addAll(button, log_renderer);
         log("Idling");
@@ -70,11 +81,11 @@ public class Main extends Application {
     public static void main(String[] args) throws Exception {
         launch(args);
     }
-    
+
     private static void log(String s) {
         log_renderer.appendText(s + "\n");
     }
-    
+
     public static void startPrintLoop() throws InterruptedException {
         new java.util.Timer().schedule(
                 new java.util.TimerTask() {
@@ -86,31 +97,28 @@ public class Main extends Application {
                 } catch (Exception ex) {
                     Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
                     log(ex.getLocalizedMessage());
-                }   
+                }
             }
         }, 0, 2000);
     }
 
     private static void print() throws Exception {
         log("printing");
-        
-        document = PDDocument.load(new File("./example.pdf"));
 
-        PrintService myPrintService = findPrintService("PDFwriter");
+        document = PDDocument.load(new File("./example.pdf"));
 
         PrinterJob job = PrinterJob.getPrinterJob();
         job.setPageable(new PDFPageable(document));
-        job.setPrintService(myPrintService);
+        job.setPrintService(printService());
         job.print();
     }
 
-    private static PrintService findPrintService(String printerName) {
+    private static PrintService printService() {
         PrintService[] printServices = PrintServiceLookup.lookupPrintServices(null, null);
-        for (PrintService printService : printServices) {
-            if (printService.getName().trim().equals(printerName)) {
-                return printService;
-            }
+        if (printServices.length > 0) {
+            return printServices[0];
         }
+
         return null;
     }
 }
