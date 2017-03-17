@@ -29,6 +29,11 @@ import java.util.logging.Logger;
 
 import java.util.Random;
 
+import java.awt.print.PageFormat;
+import javax.print.attribute.standard.MediaSize;
+import javax.print.attribute.HashPrintRequestAttributeSet;
+import javax.print.attribute.PrintRequestAttributeSet;
+
 public class Main extends Application {
 
     static PDDocument document;
@@ -116,7 +121,11 @@ public class Main extends Application {
         PrinterJob job = PrinterJob.getPrinterJob();
         job.setPageable(new PDFPageable(randomDocument()));
         job.setPrintService(randomPrintService());
-        job.print();
+
+        PrintRequestAttributeSet print_attrs = new HashPrintRequestAttributeSet();
+        print_attrs.add(MediaSize.ISO.A5);
+
+        job.print(print_attrs);
     }
     
     private static PDDocument randomDocument() throws IOException {
